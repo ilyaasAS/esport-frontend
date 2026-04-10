@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+.vscode
+node_modules
+dist
+Dockerfile
+docker-compose.yml
+README.md
+*.log
+.env
+.env.*
