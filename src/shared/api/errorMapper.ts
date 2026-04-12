@@ -8,6 +8,7 @@ export function toAppApiError(error: unknown): AppApiError {
       return {
         status: payload.status ?? error.response?.status ?? 500,
         message: payload.message ?? "Une erreur API inattendue s'est produite.",
+        errorCode: payload.errorCode,
         details: payload.details,
       }
     }

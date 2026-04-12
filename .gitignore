@@ -1,3 +1,7 @@
+# Secrets (ne jamais versionner — Vite, tokens, URLs locales)
+.env
+.env.local
+
 # Logs
 logs
 *.log
