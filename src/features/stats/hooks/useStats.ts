@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getMatches } from '../../matches/services/matchesApi'
 import { getTop3Players, getTotalScore } from '../services/statsApi'
 
+/** Erreurs 401 : message dédié dans DashboardPage (StatsQueryErrorMessage). */
+
 export function useTop3PlayersQuery() {
   return useQuery({
     queryKey: ['stats', 'top-3'],

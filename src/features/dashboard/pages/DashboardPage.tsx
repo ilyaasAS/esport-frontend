@@ -1,5 +1,7 @@
 import { Crown, Medal, Swords, Trophy, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { resolveKpiNumericValue } from '../../../shared/lib/coerceNumber'
+import { isAxiosUnauthorized } from '../../../shared/lib/httpError'
 import { useMatchesCountQuery, useTop3PlayersQuery, useTotalScoreQuery } from '../../stats/hooks/useStats'
 
 export function DashboardPage() {
@@ -28,23 +30,26 @@ export function DashboardPage() {
                 <SkeletonLine />
               </div>
             ) : top3Query.isError ? (
-              <p className="text-sm text-red-300">Echec de la connexion aux donnees.</p>
+              <StatsQueryErrorMessage error={top3Query.error} />
             ) : (
               <ol className="space-y-2">
-                {(top3Query.data ?? []).map((p, index) => (
+                {(Array.isArray(top3Query.data) ? top3Query.data : []).map((p, index) => {
+                  const row = normalizeTop3Row(p, index)
+                  return (
                   <li
-                    key={p.id}
+                    key={row.id}
                     className="flex items-center justify-between rounded-md border border-slate-800 bg-arena-950 px-3 py-2"
                   >
                     <div className="flex items-center gap-2">
                       <MedalIcon rank={index + 1} />
-                      <span className="text-sm font-semibold text-slate-100">{p.nickname}</span>
-                      <span className="text-xs text-slate-500">Niveau {p.level}</span>
+                      <span className="text-sm font-semibold text-slate-100">{row.nickname}</span>
+                      <span className="text-xs text-slate-500">Niveau {row.level}</span>
                     </div>
-                    <span className="text-sm font-semibold text-neon-400">{p.score}</span>
+                    <span className="text-sm font-semibold text-neon-400">{row.score}</span>
                   </li>
-                ))}
-                {(top3Query.data ?? []).length === 0 ? (
+                  )
+                })}
+                {(Array.isArray(top3Query.data) ? top3Query.data : []).length === 0 ? (
                   <p className="text-sm text-slate-400">Aucun joueur enregistre.</p>
                 ) : null}
               </ol>
@@ -62,11 +67,11 @@ export function DashboardPage() {
                 <SkeletonLine className="w-2/3" />
               </div>
             ) : totalScoreQuery.isError ? (
-              <p className="text-sm text-red-300">Echec de la connexion aux donnees.</p>
+              <StatsQueryErrorMessage error={totalScoreQuery.error} />
             ) : (
               <div className="space-y-1">
                 <p className="text-3xl font-semibold tracking-tight text-slate-100">
-                  {totalScoreQuery.data ?? 0}
+                  {resolveKpiNumericValue(totalScoreQuery.data)}
                 </p>
                 <p className="text-sm text-slate-400">Total des points generes par les matchs.</p>
               </div>
@@ -84,11 +89,11 @@ export function DashboardPage() {
                 <SkeletonLine className="w-3/4" />
               </div>
             ) : matchesCountQuery.isError ? (
-              <p className="text-sm text-red-300">Echec de la connexion aux donnees.</p>
+              <StatsQueryErrorMessage error={matchesCountQuery.error} />
             ) : (
               <div className="space-y-1">
                 <p className="text-3xl font-semibold tracking-tight text-slate-100">
-                  {matchesCountQuery.data ?? 0}
+                  {resolveKpiNumericValue(matchesCountQuery.data)}
                 </p>
                 <p className="text-sm text-slate-400">Matchs enregistres dans la ligue.</p>
               </div>
@@ -119,6 +124,29 @@ export function DashboardPage() {
       </div>
     </section>
   )
+}
+
+function StatsQueryErrorMessage({ error }: { error: unknown }) {
+  if (isAxiosUnauthorized(error)) {
+    return (
+      <div className="space-y-2 rounded-lg border border-neon-400/25 bg-arena-950/90 p-3 text-sm leading-relaxed text-slate-200">
+        <p>
+          Connectez-vous pour consulter ces statistiques. Si vous n&apos;avez pas encore de compte, vous pouvez en
+          créer un gratuitement.
+        </p>
+        <p className="flex flex-wrap items-center gap-2">
+          <Link to="/login" className="font-medium text-neon-400 underline-offset-2 hover:underline">
+            Se connecter
+          </Link>
+          <span className="text-slate-500">·</span>
+          <Link to="/register" className="font-medium text-neon-400 underline-offset-2 hover:underline">
+            Créer un compte
+          </Link>
+        </p>
+      </div>
+    )
+  }
+  return <p className="text-sm text-red-300">Échec de la connexion aux données.</p>
 }
 
 function KpiCard({
@@ -174,6 +202,22 @@ function SkeletonLine({ className }: { className?: string }) {
 
 function SkeletonBlock() {
   return <div className="h-10 w-24 animate-pulse rounded bg-slate-800/80" />
+}
+
+type Top3Row = { id: number; nickname: string; level: number; score: number }
+
+function normalizeTop3Row(entry: unknown, fallbackIndex: number): Top3Row {
+  if (!entry || typeof entry !== 'object') {
+    return { id: fallbackIndex, nickname: '—', level: 0, score: 0 }
+  }
+  const o = entry as Record<string, unknown>
+  const nickname = typeof o.nickname === 'string' ? o.nickname : '—'
+  return {
+    id: typeof o.id === 'number' && Number.isFinite(o.id) ? o.id : fallbackIndex,
+    nickname,
+    level: resolveKpiNumericValue(o.level),
+    score: resolveKpiNumericValue(o.score),
+  }
 }
 
 function MedalIcon({ rank }: { rank: number }) {

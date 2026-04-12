@@ -117,9 +117,16 @@ export function AppLayout() {
           />
         ) : null}
 
-        <main className="relative z-0 w-full p-4 md:p-8">
+        <main className="relative z-0 w-full min-w-0 flex-1 p-4 md:p-8 xl:pr-80">
           <Outlet />
         </main>
+
+        {/* Zone réservée au futur panneau chat IA (au-dessus du menu mobile, sous les modales futures) */}
+        <div
+          className="pointer-events-none fixed bottom-0 right-0 top-0 z-40 hidden w-80 max-w-[100vw] border-l border-slate-800/90 bg-arena-950/40 backdrop-blur-sm xl:pointer-events-auto xl:block"
+          data-ai-chat-slot
+          aria-label="Espace assistant IA"
+        />
       </div>
     </div>
   )

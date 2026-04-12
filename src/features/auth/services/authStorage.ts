@@ -37,6 +37,7 @@ export function readAuthState(): AuthState | null {
   return null
 }
 
+/** Supprime l’état d’auth (JWT + profil) du stockage navigateur — à appeler à la déconnexion. */
 export function clearAuthState(): void {
   localStorage.removeItem(AUTH_STORAGE_KEY)
 }

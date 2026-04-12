@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { queryClient } from '../../../app/providers/queryClient'
 import { login as loginRequest, register as registerRequest } from '../services/authApi'
 import { clearAuthState, readAuthState, saveAuthState } from '../services/authStorage'
 import type { AuthState, AuthUser, LoginPayload, RegisterPayload, UserRole } from '../types/auth'
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     clearAuthState()
+    queryClient.clear()
     setAuthState(null)
   }
 
