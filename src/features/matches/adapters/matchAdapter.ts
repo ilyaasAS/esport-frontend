@@ -1,4 +1,4 @@
-import type { Match, MatchDto } from '../types/match'
+import type { Match, MatchDto } from '../types/match.types'
 
 export function mapMatchDtoToMatch(dto: MatchDto): Match {
   return {

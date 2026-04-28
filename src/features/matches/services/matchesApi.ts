@@ -1,7 +1,7 @@
 import { httpClient } from '../../../shared/api/httpClient'
 import { mapMatchDtoToMatch } from '../adapters/matchAdapter'
 import type { CreateMatchFormValues } from '../schemas/createMatchSchema'
-import type { CreateMatchPayload, Match, MatchDto } from '../types/match'
+import type { CreateMatchPayload, Match, MatchDto } from '../types/match.types'
 
 export async function getMatches(): Promise<Match[]> {
   const response = await httpClient.get<MatchDto[]>('/matches')

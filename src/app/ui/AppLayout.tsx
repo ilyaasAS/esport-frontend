@@ -2,6 +2,7 @@ import { Gamepad2, Home, LogOut, Menu, Shield, Swords, Users, X } from 'lucide-r
 import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../features/auth/context/AuthContext'
+import { OracleChatPanel } from '../../features/oracle/components/OracleChatPanel'
 import { cn } from '../../shared/lib/cn'
 
 const navItems = [
@@ -117,16 +118,19 @@ export function AppLayout() {
           />
         ) : null}
 
-        <main className="relative z-0 w-full min-w-0 flex-1 p-4 md:p-8 xl:pr-80">
+        <main className="relative z-0 w-full min-w-0 flex-1 p-4 transition-all duration-300 md:p-8 lg:pr-80">
           <Outlet />
         </main>
 
-        {/* Zone réservée au futur panneau chat IA (au-dessus du menu mobile, sous les modales futures) */}
-        <div
-          className="pointer-events-none fixed bottom-0 right-0 top-0 z-40 hidden w-80 max-w-[100vw] border-l border-slate-800/90 bg-arena-950/40 backdrop-blur-sm xl:pointer-events-auto xl:block"
-          data-ai-chat-slot
-          aria-label="Espace assistant IA"
-        />
+        {isAuthenticated ? (
+          <div
+            className="pointer-events-none fixed bottom-0 right-0 top-0 z-40 hidden w-80 max-w-[100vw] border-l border-slate-800/90 bg-arena-950/40 backdrop-blur-sm lg:pointer-events-auto lg:block"
+            data-ai-chat-slot
+            aria-label="Espace assistant IA"
+          >
+            <OracleChatPanel />
+          </div>
+        ) : null}
       </div>
     </div>
   )

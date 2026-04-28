@@ -1,4 +1,4 @@
-import type { Match } from '../types/match'
+import type { Match } from '../types/match.types'
 
 type MatchesListProps = {
   matches: Match[]

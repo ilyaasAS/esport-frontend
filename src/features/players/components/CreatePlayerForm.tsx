@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toAppApiError } from '../../../shared/api/errorMapper'
-import type { AppApiError } from '../../../shared/api/types'
+import type { AppApiError } from '../../../shared/api/api.types'
 import { createPlayerSchema } from '../schemas/createPlayerSchema'
 import type { CreatePlayerFormValues } from '../schemas/createPlayerSchema'
 import { useCreatePlayerMutation } from '../hooks/usePlayers'

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { queryClient } from '../../../app/providers/queryClient'
 import { login as loginRequest, register as registerRequest } from '../services/authApi'
 import { clearAuthState, readAuthState, saveAuthState } from '../services/authStorage'
-import type { AuthState, AuthUser, LoginPayload, RegisterPayload, UserRole } from '../types/auth'
+import type { AuthState, AuthUser, LoginPayload, RegisterPayload, UserRole } from '../types/auth.types'
 
 type AuthContextValue = {
   token: string | null

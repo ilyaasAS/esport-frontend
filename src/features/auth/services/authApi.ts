@@ -1,5 +1,5 @@
 import { httpClient } from '../../../shared/api/httpClient'
-import type { AuthResponse, LoginPayload, RegisterPayload } from '../types/auth'
+import type { AuthResponse, LoginPayload, RegisterPayload } from '../types/auth.types'
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const response = await httpClient.post<AuthResponse>('/auth/login', payload)

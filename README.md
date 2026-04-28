@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# Esport Frontend - L'Expérience Utilisateur
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Le dépôt `esport-frontend` matérialise l'interface stratégique de Esport Hub.  
+Il fournit une UX temps réel orientée performance, avec une esthétique **Dark Arena** et une communication fluide avec l'Oracle IA.
 
-Currently, two official plugins are available:
+## Stack technique
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Domaine | Technologie | Usage |
+|---|---|---|
+| UI | React 19 | Composition d'interface moderne |
+| Langage | TypeScript | Sécurité de typage et maintenabilité |
+| Build tooling | Vite | Dev server rapide et build optimisé |
+| Styling | Tailwind CSS | Design system utilitaire et cohérent |
+| Routing | React Router | Navigation et protection de routes |
+| Data fetching | React Query | Cache, synchronisation et invalidation |
+| Formulaires | React Hook Form + Zod | Validation robuste des entrées |
+| HTTP | Axios | Communication API backend |
 
-## React Compiler
+## Interface stratégique: UX Dark Arena
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+L'interface est conçue pour des usages opérationnels:
 
-## Expanding the ESLint configuration
+- contraste élevé et hiérarchie visuelle claire,
+- écrans orientés action (inscription, création de match, supervision),
+- feedback immédiat sur succès/erreurs,
+- expérience fluide sur les parcours critiques métier.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Cette approche vise un produit **Production-Ready**: lisible, rapide, robuste et exploitable en contexte réel.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Gestion du flux IA: Streaming SSE
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Le module Oracle frontend exploite les **Server-Sent Events (SSE)** pour afficher la réponse IA de façon progressive (mot à mot / segment par segment):
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- perception de latence réduite,
+- meilleure continuité conversationnelle,
+- interaction naturelle avec un agent orienté action.
+
+Le streaming est géré dans la couche `shared/api` et consommé par la feature `oracle`.
+
+## Architecture Feature-First
+
+Le code est structuré par domaine métier:
+
+| Feature | Responsabilité |
+|---|---|
+| `auth` | Inscription, connexion, contexte utilisateur, persistance token |
+| `players` | Consultation et création des joueurs |
+| `matches` | Consultation et enregistrement des matchs |
+| `oracle` | Chat IA, orchestration UI du flux SSE |
+| `stats` | KPIs et agrégats métier |
+| `dashboard` | Vue consolidée des opérations |
+
+## Organisation interne des features
+
+- `pages`: écrans routés.
+- `components`: briques UI locales.
+- `hooks`: orchestration de données et mutations.
+- `services`: accès API.
+- `adapters`: mapping DTO <-> modèles UI.
+- `schemas`: validation Zod.
+- `types`: contrats TypeScript (`*.types.ts`).
+
+Les éléments transverses résident dans `src/shared` (API client, mapping erreurs, utilitaires, composants mutualisés).
+
+## Secure by Design (frontend)
+
+Le frontend applique des pratiques de sécurité cohérentes:
+
+- routes protégées par rôle et état d'authentification,
+- propagation contrôlée du JWT sur les appels API,
+- gestion centralisée des erreurs backend normalisées,
+- architecture modulaire limitant les couplages et les effets de bord.
+
+## Démarrage local
+
+Depuis `frontend/`:
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Accès local par défaut: [http://localhost:5173](http://localhost:5173)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Build de production
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+Les artefacts sont générés dans `dist/` et servis en conteneur Nginx en environnement Docker.
+
+## Vérification qualité
+
+```bash
+npm run lint
+```
+
+## Configuration d'environnement
+
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | URL de base de l'API backend (ex: `http://localhost:8080/api`) |
+
+Le fichier `frontend/.env.example` sert de référence pour la configuration.

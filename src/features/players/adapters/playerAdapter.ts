@@ -1,5 +1,5 @@
 import type { CreatePlayerFormValues } from '../schemas/createPlayerSchema'
-import type { CreatePlayerPayload, Player, PlayerDto } from '../types/player'
+import type { CreatePlayerPayload, Player, PlayerDto } from '../types/player.types'
 
 export function mapPlayerDtoToPlayer(dto: PlayerDto): Player {
   return {
