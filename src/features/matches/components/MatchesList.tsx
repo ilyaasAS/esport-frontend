@@ -8,7 +8,7 @@ export function MatchesList({ matches }: MatchesListProps) {
   if (matches.length === 0) {
     return (
       <div className="rounded-xl border border-slate-800 bg-arena-900 p-4 text-sm text-slate-400">
-        Aucun match enregistre. Enregistre le premier resultat.
+        Aucun match enregistré. Enregistre le premier résultat.
       </div>
     )
   }

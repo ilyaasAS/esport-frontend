@@ -7,12 +7,13 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:stable-alpine
-WORKDIR /usr/share/nginx/html
+# Durcissement ANSSI : image Nginx non-privilégiée (uid 101, écoute sur un port > 1024).
+# Compatible Cloud Run (écoute sur 8080) sans aucune capability réseau privilégiée.
+FROM nginxinc/nginx-unprivileged:stable-alpine
 
-COPY --from=builder /app/dist ./
+COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]

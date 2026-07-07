@@ -2,11 +2,11 @@ import { readAuthToken } from '../../features/auth/services/authStorage'
 import { getApiRootUrl } from './apiBaseUrl'
 
 /**
- * Requêtes `fetch` vers l’API pour réponses en flux (NDJSON, SSE, chunked).
- * Aucun timeout implicite : les streams IA peuvent durer indéfiniment côté navigateur.
- * Utiliser `response.body` (ReadableStream) ou `response.text()` selon le contrat d’endpoint.
+ * Requêtes de récupération vers l'API pour des réponses en flux (données fragmentées).
+ * Aucun délai d'expiration implicite : les flux IA peuvent durer indéfiniment côté navigateur.
+ * Utiliser `response.body` (flux lisible) ou `response.text()` selon le contrat du point d'accès.
  */
-// IMPORTANT: Ne jamais ajouter de timeout ici pour permettre à l'Oracle de répondre sans limite de temps.
+// REMARQUE IMPORTANTE : Ne jamais ajouter de délai d'expiration ici pour permettre à l'Oracle de répondre sans limite de temps.
 export async function aiStreamFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const base = getApiRootUrl()
   const url = path.startsWith('http') ? path : `${base}${path.startsWith('/') ? path : `/${path}`}`

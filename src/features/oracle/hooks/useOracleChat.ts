@@ -27,13 +27,19 @@ export function useOracleChat(): UseOracleChatResult {
   const abortRef = useRef<AbortController | null>(null)
   const queueRef = useRef<string[]>([])
   const pumpingRef = useRef(false)
+  const rafRef = useRef<number | null>(null)
   const lastOracleIdRef = useRef<string | null>(null)
+  const BATCH_SIZE = 8
 
   const stopStreaming = useCallback(() => {
     abortRef.current?.abort()
     abortRef.current = null
     queueRef.current = []
     pumpingRef.current = false
+    if (rafRef.current !== null) {
+      window.cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
     setIsStreaming(false)
   }, [])
 
@@ -46,33 +52,42 @@ export function useOracleChat(): UseOracleChatResult {
     pumpingRef.current = true
 
     const tick = () => {
-      const nextWord = queueRef.current.shift()
-      if (!nextWord) {
+      if (queueRef.current.length === 0) {
         pumpingRef.current = false
+        rafRef.current = null
         return
       }
 
       const oracleId = lastOracleIdRef.current
       if (!oracleId) {
         pumpingRef.current = false
+        rafRef.current = null
         return
       }
 
+      const nextChunks = queueRef.current.splice(0, BATCH_SIZE)
+      const mergedChunk = nextChunks.join('')
+
       setMessages((current) =>
-        current.map((message) =>
-          message.id === oracleId
-            ? {
-                ...message,
-                content: message.content.length === 0 ? nextWord : `${message.content} ${nextWord}`,
-              }
-            : message,
-        ),
+        {
+          const oracleIndex = current.findIndex((message) => message.id === oracleId)
+          if (oracleIndex === -1) {
+            return current
+          }
+
+          const oracleMessage = current[oracleIndex]
+          const nextContent = `${oracleMessage.content}${mergedChunk}`
+
+          const updated = [...current]
+          updated[oracleIndex] = { ...oracleMessage, content: nextContent }
+          return updated
+        },
       )
 
-      window.setTimeout(tick, 35)
+      rafRef.current = window.requestAnimationFrame(tick)
     }
 
-    tick()
+    rafRef.current = window.requestAnimationFrame(tick)
   }, [])
 
   const submitMessage = useCallback(async () => {
@@ -106,12 +121,7 @@ export function useOracleChat(): UseOracleChatResult {
         message: content,
         signal: controller.signal,
         onChunk: (chunk) => {
-          const words = chunk
-            .replace(/\s+/g, ' ')
-            .trim()
-            .split(' ')
-            .filter(Boolean)
-          queueRef.current.push(...words)
+          queueRef.current.push(chunk)
           appendOracleWords()
         },
       })
@@ -121,20 +131,27 @@ export function useOracleChat(): UseOracleChatResult {
       }
       setError(err instanceof Error ? err.message : "L'Oracle est momentanément indisponible.")
       if (lastOracleIdRef.current) {
-        setMessages((current) =>
-          current.map((message) =>
-            message.id === lastOracleIdRef.current
-              ? {
-                  ...message,
-                  content:
-                    message.content || "Je n'ai pas pu répondre. Vérifie l'authentification et l'état du backend Oracle.",
-                }
-              : message,
-          ),
-        )
+        setMessages((current) => {
+          const oracleIndex = current.findIndex((message) => message.id === lastOracleIdRef.current)
+          if (oracleIndex === -1) {
+            return current
+          }
+          const oracleMessage = current[oracleIndex]
+          const updated = [...current]
+          updated[oracleIndex] = {
+            ...oracleMessage,
+            content:
+              oracleMessage.content || "Je n'ai pas pu répondre. Vérifie l'authentification et l'état du backend Oracle.",
+          }
+          return updated
+        })
       }
     } finally {
       abortRef.current = null
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
+      }
       setIsStreaming(false)
     }
   }, [appendOracleWords, composer, isStreaming])

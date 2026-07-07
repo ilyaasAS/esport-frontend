@@ -53,10 +53,12 @@ export function CreatePlayerForm({ onCreated }: CreatePlayerFormProps) {
           id="nickname"
           type="text"
           placeholder="ShadowStrike"
+          aria-invalid={errors.nickname ? 'true' : 'false'}
+          aria-describedby={errors.nickname ? 'nickname-error' : undefined}
           className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400"
           {...register('nickname')}
         />
-        {errors.nickname ? <p className="text-xs text-red-400">{errors.nickname.message}</p> : null}
+        {errors.nickname ? <p id="nickname-error" className="text-xs text-red-400">{errors.nickname.message}</p> : null}
       </div>
 
       <div className="space-y-1">
@@ -67,10 +69,12 @@ export function CreatePlayerForm({ onCreated }: CreatePlayerFormProps) {
           id="level"
           type="number"
           min={0}
+          aria-invalid={errors.level ? 'true' : 'false'}
+          aria-describedby={errors.level ? 'level-error' : undefined}
           className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400"
           {...register('level', { valueAsNumber: true })}
         />
-        {errors.level ? <p className="text-xs text-red-400">{errors.level.message}</p> : null}
+        {errors.level ? <p id="level-error" className="text-xs text-red-400">{errors.level.message}</p> : null}
       </div>
 
       {errors.root?.message ? (

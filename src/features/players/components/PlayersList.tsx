@@ -8,7 +8,7 @@ export function PlayersList({ players }: PlayersListProps) {
   if (players.length === 0) {
     return (
       <div className="rounded-xl border border-slate-800 bg-arena-900 p-4 text-sm text-slate-400">
-        Aucun joueur enregistre.
+        Aucun joueur enregistré.
       </div>
     )
   }
@@ -18,9 +18,9 @@ export function PlayersList({ players }: PlayersListProps) {
       <table className="w-full border-collapse text-left text-sm">
         <thead className="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
           <tr>
-            <th className="px-4 py-3">Pseudo</th>
-            <th className="px-4 py-3">Niveau</th>
-            <th className="px-4 py-3">Points</th>
+            <th scope="col" className="px-4 py-3">Pseudo</th>
+            <th scope="col" className="px-4 py-3">Niveau</th>
+            <th scope="col" className="px-4 py-3">Points</th>
           </tr>
         </thead>
         <tbody>

@@ -60,7 +60,7 @@ export function CreateMatchForm() {
 
       {!playersReady && !playersQuery.isLoading ? (
         <p className="rounded-md border border-slate-800 bg-arena-950 px-3 py-2 text-sm text-slate-300">
-          Cree au moins <span className="font-semibold text-neon-400">2 joueurs</span> avant
+          Crée au moins <span className="font-semibold text-neon-400">2 joueurs</span> avant
           d'enregistrer un match.
         </p>
       ) : null}
@@ -71,18 +71,20 @@ export function CreateMatchForm() {
         </label>
         <select
           id="player1Id"
+          aria-invalid={errors.player1Id ? 'true' : 'false'}
+          aria-describedby={errors.player1Id ? 'player1Id-error' : undefined}
           className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400 disabled:opacity-60"
           disabled={disabled || !playersReady}
           {...register('player1Id', { valueAsNumber: true })}
         >
-          <option value={0}>Selectionner un joueur</option>
+          <option value={0}>Sélectionner un joueur</option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        {errors.player1Id ? <p className="text-xs text-red-400">{errors.player1Id.message}</p> : null}
+        {errors.player1Id ? <p id="player1Id-error" className="text-xs text-red-400">{errors.player1Id.message}</p> : null}
       </div>
 
       <div className="space-y-1">
@@ -91,18 +93,20 @@ export function CreateMatchForm() {
         </label>
         <select
           id="player2Id"
+          aria-invalid={errors.player2Id ? 'true' : 'false'}
+          aria-describedby={errors.player2Id ? 'player2Id-error' : undefined}
           className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400 disabled:opacity-60"
           disabled={disabled || !playersReady}
           {...register('player2Id', { valueAsNumber: true })}
         >
-          <option value={0}>Selectionner un joueur</option>
+          <option value={0}>Sélectionner un joueur</option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        {errors.player2Id ? <p className="text-xs text-red-400">{errors.player2Id.message}</p> : null}
+        {errors.player2Id ? <p id="player2Id-error" className="text-xs text-red-400">{errors.player2Id.message}</p> : null}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -114,11 +118,13 @@ export function CreateMatchForm() {
             id="score1"
             type="number"
             min={0}
+            aria-invalid={errors.score1 ? 'true' : 'false'}
+            aria-describedby={errors.score1 ? 'score1-error' : undefined}
             className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400 disabled:opacity-60"
             disabled={disabled || !playersReady}
             {...register('score1', { valueAsNumber: true })}
           />
-          {errors.score1 ? <p className="text-xs text-red-400">{errors.score1.message}</p> : null}
+          {errors.score1 ? <p id="score1-error" className="text-xs text-red-400">{errors.score1.message}</p> : null}
         </div>
         <div className="space-y-1">
           <label htmlFor="score2" className="text-sm text-slate-300">
@@ -128,11 +134,13 @@ export function CreateMatchForm() {
             id="score2"
             type="number"
             min={0}
+            aria-invalid={errors.score2 ? 'true' : 'false'}
+            aria-describedby={errors.score2 ? 'score2-error' : undefined}
             className="w-full rounded-md border border-slate-700 bg-arena-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-neon-400 disabled:opacity-60"
             disabled={disabled || !playersReady}
             {...register('score2', { valueAsNumber: true })}
           />
-          {errors.score2 ? <p className="text-xs text-red-400">{errors.score2.message}</p> : null}
+          {errors.score2 ? <p id="score2-error" className="text-xs text-red-400">{errors.score2.message}</p> : null}
         </div>
       </div>
 

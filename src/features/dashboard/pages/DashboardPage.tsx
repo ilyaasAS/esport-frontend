@@ -14,7 +14,7 @@ export function DashboardPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold text-slate-100 md:text-3xl">Tableau de bord</h1>
         <p className="text-sm text-slate-400 md:text-base">
-          Vision instantanee de la ligue : classement, activites recentes et score cumule.
+          Vision instantanée de la ligue : classement, activités récentes et score cumulé.
         </p>
       </div>
 
@@ -50,7 +50,7 @@ export function DashboardPage() {
                   )
                 })}
                 {(Array.isArray(top3Query.data) ? top3Query.data : []).length === 0 ? (
-                  <p className="text-sm text-slate-400">Aucun joueur enregistre.</p>
+                  <p className="text-sm text-slate-400">Aucun joueur enregistré.</p>
                 ) : null}
               </ol>
             )
@@ -73,14 +73,14 @@ export function DashboardPage() {
                 <p className="text-3xl font-semibold tracking-tight text-slate-100">
                   {resolveKpiNumericValue(totalScoreQuery.data)}
                 </p>
-                <p className="text-sm text-slate-400">Total des points generes par les matchs.</p>
+                <p className="text-sm text-slate-400">Total des points générés par les matchs.</p>
               </div>
             )
           }
         />
 
         <KpiCard
-          title="Dernieres activites"
+          title="Dernières activités"
           icon={<Swords className="h-4 w-4 text-neon-400" />}
           body={
             matchesCountQuery.isLoading ? (
@@ -95,7 +95,7 @@ export function DashboardPage() {
                 <p className="text-3xl font-semibold tracking-tight text-slate-100">
                   {resolveKpiNumericValue(matchesCountQuery.data)}
                 </p>
-                <p className="text-sm text-slate-400">Matchs enregistres dans la ligue.</p>
+                <p className="text-sm text-slate-400">Matchs enregistrés dans la ligue.</p>
               </div>
             )
           }
@@ -105,19 +105,19 @@ export function DashboardPage() {
       <div className="rounded-xl border border-slate-800 bg-arena-900 p-4">
         <h2 className="text-lg font-semibold text-slate-100">Actions rapides</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Agis rapidement : inscris des joueurs et enregistre les resultats.
+          Agis rapidement : inscris des joueurs et enregistre les résultats.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <QuickAction
             to="/players"
             title="Inscrire un joueur"
-            description="Enregistrer un nouveau competiteur."
+            description="Enregistrer un nouveau compétiteur."
             icon={<Users className="h-4 w-4 text-neon-400" />}
           />
           <QuickAction
             to="/matches"
             title="Enregistrer un match"
-            description="Enregistrer le resultat d'un nouveau match."
+            description="Enregistrer le résultat d'un nouveau match."
             icon={<Medal className="h-4 w-4 text-neon-400" />}
           />
         </div>

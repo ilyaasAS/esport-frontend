@@ -66,7 +66,7 @@ function flushFrames(buffer: string, onChunk: (chunk: string) => void, flushAll 
 
   if (flushAll) {
     const rest = buffer.slice(cursor)
-    if (rest.trim().length > 0) {
+    if (/[^\r\n]/.test(rest)) {
       pushFrame(rest, onChunk)
     }
     return ''
@@ -76,17 +76,17 @@ function flushFrames(buffer: string, onChunk: (chunk: string) => void, flushAll 
 }
 
 function pushFrame(frame: string, onChunk: (chunk: string) => void) {
-  const trimmed = frame.trim()
-  if (!trimmed) {
+  const normalizedFrame = frame.replace(/\r/g, '')
+  if (!/[^\n]/.test(normalizedFrame)) {
     return
   }
 
-  if (trimmed.includes('data:')) {
-    const lines = trimmed
+  if (normalizedFrame.includes('data:')) {
+    const lines = normalizedFrame
       .split('\n')
-      .map((line) => line.trim())
       .filter((line) => line.startsWith('data:'))
-      .map((line) => line.slice(5).trimStart())
+      // SSE: retire seulement l'espace optionnel juste après "data:"
+      .map((line) => (line.startsWith('data: ') ? line.slice(6) : line.slice(5)))
 
     const text = lines.join('\n')
     if (text.length > 0 && text !== '[DONE]') {
@@ -95,5 +95,5 @@ function pushFrame(frame: string, onChunk: (chunk: string) => void) {
     return
   }
 
-  onChunk(trimmed)
+  onChunk(normalizedFrame)
 }

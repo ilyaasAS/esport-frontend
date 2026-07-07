@@ -31,6 +31,8 @@ export function AppLayout() {
         <button
           type="button"
           aria-label="Afficher ou masquer le menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
           className="rounded-md border border-slate-700 p-2"
           onClick={() => setMobileOpen((value) => !value)}
         >
@@ -49,7 +51,7 @@ export function AppLayout() {
             <Gamepad2 className="h-5 w-5 text-neon-400" />
             <span className="font-semibold">Esport Hub</span>
           </div>
-          <nav className="space-y-2">
+          <nav id="mobile-navigation" className="space-y-2">
             {navItems.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
